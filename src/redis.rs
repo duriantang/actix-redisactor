@@ -27,6 +27,7 @@ impl Message for Command {
 /// Redis comminucation actor
 pub struct RedisActor {
     addr: String,
+    db: usize,
     backoff: ExponentialBackoff,
     cell: Option<actix::io::FramedWrite<WriteHalf<TcpStream>, RespCodec>>,
     queue: VecDeque<oneshot::Sender<Result<RespValue, Error>>>,
@@ -34,14 +35,16 @@ pub struct RedisActor {
 
 impl RedisActor {
     /// Start new `Supervisor` with `RedisActor`.
-    pub fn start<S: Into<String>>(addr: S) -> Addr<RedisActor> {
+
+    pub fn start<S: Into<String>>(addr: S, db: usize) -> Addr<RedisActor> {
         let addr = addr.into();
 
         let mut backoff = ExponentialBackoff::default();
         backoff.max_elapsed_time = None;
 
-        Supervisor::start(|_| RedisActor {
+        Supervisor::start(move |_| RedisActor {
             addr,
+            db,
             cell: None,
             backoff: backoff,
             queue: VecDeque::new(),
@@ -63,7 +66,8 @@ impl Actor for RedisActor {
                     let (r, w) = stream.split();
 
                     // configure write side of the connection
-                    let framed = actix::io::FramedWrite::new(w, RespCodec, ctx);
+                    let mut framed = actix::io::FramedWrite::new(w, RespCodec, ctx);
+                    framed.write(resp_array!["SELECT", act.db.to_string()]);
                     act.cell = Some(framed);
 
                     // read side of the connection
