@@ -4,7 +4,6 @@ extern crate log;
 extern crate redis_async;
 #[macro_use]
 extern crate derive_more;
-
 mod redis;
 pub use redis::{Command, RedisActor};
 
@@ -22,5 +21,4 @@ pub enum Error {
 }
 
 // re-export
-pub use redis_async::error::Error as RespError;
-pub use redis_async::resp::RespValue;
+pub use redis_async::{error::Error as RespError, resp::RespValue};

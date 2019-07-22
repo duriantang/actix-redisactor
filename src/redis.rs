@@ -1,17 +1,16 @@
-use std::collections::VecDeque;
-use std::io;
-
-use actix::actors::resolver::{Connect, Resolver};
-use actix::prelude::*;
-use backoff::backoff::Backoff;
-use backoff::ExponentialBackoff;
-use futures::unsync::oneshot;
-use futures::Future;
-use redis_async::error::Error as RespError;
-use redis_async::resp::{RespCodec, RespValue};
+use actix::{
+    actors::resolver::{Connect, Resolver},
+    prelude::*,
+};
+use backoff::{backoff::Backoff, ExponentialBackoff};
+use futures::{unsync::oneshot, Future};
+use redis_async::{
+    error::Error as RespError,
+    resp::{RespCodec, RespValue},
+};
+use std::{collections::VecDeque, io};
 use tokio_codec::FramedRead;
-use tokio_io::io::WriteHalf;
-use tokio_io::AsyncRead;
+use tokio_io::{io::WriteHalf, AsyncRead};
 use tokio_tcp::TcpStream;
 
 use crate::Error;
@@ -46,7 +45,7 @@ impl RedisActor {
             addr,
             db,
             cell: None,
-            backoff: backoff,
+            backoff,
             queue: VecDeque::new(),
         })
     }
