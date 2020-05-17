@@ -1,18 +1,18 @@
 [package]
 name = "actix-redisactor"
 version = "0.4.0"
-authors = ["Hui Tang <duriantang@gmail.com>"]
+authors = [ "Hui Tang <duriantang@gmail.com>" ]
 edition = "2018"
 description = "Actix Redis Actor"
 license = "MIT"
 
 [dependencies]
 actix = "0.9.0"
-backoff = "0.1.5"
-derive_more = "0.99.2"
-futures = "0.3.1"
+actix-utils = "1.0.6"
+backoff = "0.1.6"
+derive_more = "0.99.7"
+futures = { version = "0.3.5", features = [ "compat" ] }
 log = "0.4.8"
-redis-async = "0.6.1"
-tokio = "0.2.6"
-tokio-util = "0.2.0"
-actix-utils = "1.0.3"
+redis-async = "=0.6.2"
+tokio = "0.2.21"
+tokio-util = { version = "0.2.0", features = [ "full" ] }
